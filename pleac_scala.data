@@ -446,55 +446,54 @@ for (i <- 1 to 3900) {
 
 // @@PLEAC@@_2.7
 //----------------------------------------------------------------------------------
-// TODO
-random = new Random()
-100.times{
-    next = random.nextInt(50) + 25
-    assert next > 24
-    assert next < 76
-}
-chars = []
-['A'..'Z','a'..'z','0'..'9',('!@$%^&*' as String[]).toList()].each{chars += it}
-password = (1..8).collect{ chars[random.nextInt(chars.size())] }.join()
-assert password.size() == 8
+val rnd = new scala.util.Random()
+val randomNumber = rnd.nextInt(10) // Random number between 0 (inclusive) and 10 (exclusive)
+assert(randomNumber >= 0 && randomNumber < 10)
+
+// Creates a random number between 25 (inclusive) and 75 (inclusive)
+val rnd = new scala.util.Random()
+val randomNumber = rnd.nextInt(51) + 25
+assert (randomNumber >= 25 && randomNumber <= 75)
+
+val rnd = new scala.util.Random()
+val fruits = List("apple", "banana", "orange", "strawberry")
+val eatme = fruits(rnd.nextInt(fruits.length))
+assert(fruits.exists(_ == eatme)) // check that in fruits exists eatme
+
+val rnd = new scala.util.Random()
+val chars = ('A' to 'Z').toList ::: ('a' to 'z').toList ::: List('!', '@', '$', '%', '^', '&', '*') ::: Nil
+val password = (for (i <- 1 to 8; c = chars(rnd.nextInt(chars.length))) yield c).mkString
+assert(password.length == 8) // sorry we can assert the length only ;)
+
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.8
 //----------------------------------------------------------------------------------
-// TODO
-// By default Groovy uses Java's Random facilities which use the current time
-// as the initial seed. This always changes but does so slowly over time.
-// You are free to select a better seed if you want greater randomness or
-// use the same one each time if you need repeatability.
-long seed = System.currentTimeMillis()
-random1 = new Random(seed)
-random2 = new Random(seed)
-assert random1.nextInt() == random2.nextInt()
+// Scala uses Java's java.util.Random 
+// You can use your own seed, but beware of this!
+val seed = System.currentTimeMillis()
+val rnd1 = new scala.util.Random(seed)
+val rnd2 = new scala.util.Random(seed)
+// Same seed same random numbers...
+assert(rnd1.nextInt() == rnd2.nextInt())
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.9
 //----------------------------------------------------------------------------------
-// TODO
-// java.util.Random which Groovy uses already uses a 48-bit seed
-// You can make use 64 not 48 bits (and make better use of the 48 bits) see here:
-// http://alife.co.uk/nonrandom/
-// You can choose a better seed, e.g. Ant uses:
-seed = System.currentTimeMillis() + Runtime.runtime.freeMemory()
-// You can accept input from the user, e.g.
-// http://examples.oreilly.com/javacrypt/files/oreilly/jonathan/util/Seeder.java
+// Use java.security.SecureRandom instead of scala.util.Random or java.util.Random
+// SecureRandom is a subclass of java.util.Random so the usage is the same:
+val rnd = new java.security.SecureRandom()
+val secureRandomNumber = rnd.nextInt(10)
+assert(secureRandomNumber >= 0 && secureRandomNumber < 10)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.10
 //----------------------------------------------------------------------------------
-// TODO
-// use Java's Random.nextGaussian() method
-random = new Random()
-mean = 25
-sdev = 2
-salary = random.nextGaussian() * sdev + mean
-// script:
-printf 'You have been hired at \$%.2f', salary
-// => You have been hired at $25.05
+// use Java's Random.nextGaussian() method.
+// Scala's Random doesn't have it at the moment
+// See http://lampsvn.epfl.ch/trac/scala/ticket/2008
+val rnd = new java.util.Random()
+val randomNumber = rnd.nextGaussian() * sdev + mean
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.11
