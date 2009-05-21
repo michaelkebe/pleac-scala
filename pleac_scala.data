@@ -152,15 +152,40 @@ assert(new String(Array('s', 'a', 'm', 'p', 'l', 'e')) == "sample")
 assert(new String("HAL".toCharArray.map(_ + 1).toChar)) == "IBM")
 //----------------------------------------------------------------------------------
 
-// @@PLEAC@@_1.5 TODO
+// @@PLEAC@@_1.5
 //----------------------------------------------------------------------------------
+// Example to process a string one character at the time
+// 3 ways are shown here to get for examle the sum of the character of a string
+val string = "abc"
+val expectedSum = 'a' + 'b' + 'c' // 294
+
+// Create a function an calculate with pattern matching
+def sumChars(chars:List[Char]):Int = {
+  chars match {
+    case Nil => 0
+    case head :: tail => head + sumChars(tail)
+  }
+}
+assert(sumChars(string.toList) == expectedSum)
+
+// Call the foreach method with a closure to add the chars
+var sum = 0
+string.foreach { c => {
+  sum += c
+}}
+assert(sum == expectedSum)
+
+// Use the foldLeft method or the alias /:
+assert(string.foldLeft(0)((a,b) => a + b) == expectedSum)
+assert(string./:(0)((a,b) => a + b) == expectedSum)      
+
 val string = "an apple a day"
 var s = ""
 string.foreach { c => s = s + c }
 assert(s == "an apple a day")
 assert(string.substring(3,8).split("").subArray(1,6).deepEquals(Array("a", "p", "p", "l", "e")))
-
 //----------------------------------------------------------------------------------
+// TODO
 // CheckSum.groovy: Compute 16-bit checksum of input file
 // Usage: groovy CheckSum <file>
 // script:
