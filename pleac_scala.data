@@ -1016,84 +1016,52 @@ assert '\n' + new MailHopDelta(sampleMessage).process() == expected
 
 // @@PLEAC@@_4.0
 //----------------------------------------------------------------------------------
-// TODO
-simple = [ "this", "that", "the", "other" ]
-nested = [ "this", "that", [ "the", "other" ] ]
-assert nested.size() == 3
-assert nested[2].size() == 2
-
-flattenNestedToSimple = [ "this", "that", [ "the", "other" ] ].flatten()
-assert flattenNestedToSimple.size() == 4
+// Introduction to lists
+// Scala does not automatically flatten lists
+val simple = List("this", "that", "the", "other")
+val nested = List("this", "that", List("the", "other"))
+assert(simple.length == 4)
+assert(nested.length == 3)
+// Concatenate the elements of a list. The elements of this list must be Iterables!
+val nested2 = List(List("this"), List("that"), List("the","other"))
+val flattenNestedToSimple = List.flatten(nested2)
+assert(flattenNestedToSimple.length == 4)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_4.1
 //----------------------------------------------------------------------------------
-// TODO
-a = [ "quick", "brown", "fox" ]
-assert a.size() == 3
-a = 'Why are you teasing me?'.split(' ')
-assert a == ["Why", "are", "you", "teasing", "me?"]
-
-removeLeadingSpaces = { it.trim() }
-nonBlankLines = { it }
-lines = '''
-    The boy stood on the burning deck,
-    It was as hot as glass.
-'''.split('\n').collect(removeLeadingSpaces).findAll(nonBlankLines)
-
-assert lines == ["The boy stood on the burning deck,",
-                 "It was as hot as glass."]
-
-// initialiseListFromFileScript:
-lines = new File('mydata.txt').readLines()
-
-// processFileScript:
-new File('mydata.txt').eachLine{
-    // dosomething
-}
+// You want to include a list in your program. This is how you initialize arrays.
+val foo = Array("quick","brown","fox")
+assert(foo.length == 3)
+val bar = "Why are you teasing me?".split(" ")
+assert(bar.length == 5);
+val lines = "     The boy stood on the burning deck,\nIt was hot as glass.".trim.split("\n")
+val fooBar = Array("The boy stood on the burning deck,","It was hot as glass.")
+for(i <- 0 until 2) assert(lines(i) == fooBar(i))
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_4.2
 //----------------------------------------------------------------------------------
-// TODO
-marbleColors = ['red', 'green', 'yellow']
-assert marbleColors.join(', ') == 'red, green, yellow'
+// Print out a list with an unknown number of elements with an "and" before
+// the last element, and with commas between each element
 
-def commify(items) {
-    if (!items) return items
-    def sepchar = items.find{ it =~ /,/ } ? '; ' : ', '
-    switch (items.size()) {
-        case 1: return items[0]
-        case 2: return items.join(' and ')
+var bag = new Array[List[String]](4)
+bag(0) = List()
+bag(1) = List("red", "blue")
+bag(2) = List("orange", "green", "black")
+bag(3) = List("yellow")
+bag.foreach(a => println("I have " + commify(a)))
+
+def commify(args:List[String]) = {
+    args.length match {
+        case 0 => "zero marbles"
+        case 1 => "a " + args(0) + " marble"
+        case 2 => args(0) + " and " + args(1) + " marbles"
+        case _ =>
+            (args.init ::: List("and ")).mkString(", ") + args(args.length-1) + " marbles"
     }
-    items[0..-2].join(sepchar) + sepchar + 'and ' + items[-1]
 }
 
-assert commify(marbleColors) == 'red, green, and yellow'
-
-lists = [
-    [ 'just one thing' ],
-    [ 'Mutt', 'Jeff' ],
-    'Peter Paul Mary'.split(' '),
-    [ 'To our parents', 'Mother Theresa', 'God' ],
-    [ 'pastrami', 'ham and cheese', 'peanut butter and jelly', 'tuna' ],
-    [ 'recycle tired, old phrases', 'ponder big, happy thoughts' ],
-    [ 'recycle tired, old phrases',
-      'ponder big, happy thoughts',
-      'sleep and dream peacefully' ],
-]
-
-expected = '''
-just one thing
-Mutt and Jeff
-Peter, Paul, and Mary
-To our parents, Mother Theresa, and God
-pastrami, ham and cheese, peanut butter and jelly, and tuna
-recycle tired, old phrases and ponder big, happy thoughts
-recycle tired, old phrases; ponder big, happy thoughts; and sleep and dream peacefully
-'''
-
-assert expected == '\n' + lists.collect{commify(it)}.join('\n') + '\n'
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_4.3
@@ -2024,19 +1992,19 @@ assert libdirs == expected
 // or the other special character classes
 words = '''
 silly
-façade
-coöperate
-niño
-Renée
-Moliçre
-hæmoglobin
-naïve
-tschüß
+faï¿½ade
+coï¿½perate
+niï¿½o
+Renï¿½e
+Moliï¿½re
+hï¿½moglobin
+naï¿½ve
+tschï¿½ï¿½
 random!stuff#here\u0948
 '''
 results = ''
 greekAlpha = '\u0391'
-special = 'çéüßöñàæï?' + greekAlpha
+special = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?' + greekAlpha
 // flag as either Y (alphabetic) or N (not)
 words.split('\n').findAll{it.trim()}.each{ results += it ==~ /^[\w/+special+/]+$/ ?'Y':'N' }
 assert results == 'YYYYYYYYYN'
@@ -2487,17 +2455,17 @@ new BufferedReader(new InputStreamReader(System.in)).eachLine{ line ->
 // @@PLEAC@@_6.12
 //----------------------------------------------------------------------------------
 // TODO
-src = 'dierk könig'
+src = 'dierk kï¿½nig'
 // simplistic with locale issue
 dst = src
 ('a'..'z').each{ dst = dst.replaceAll(/(?<=[^a-zA-Z])/+it+/|\A/+it, it.toUpperCase()) }
 println dst
-// => Dierk KöNig
+// => Dierk Kï¿½Nig
 // locale avoidance
 dst = src
 ('a'..'z').each{ dst = dst.replaceAll(/(?<=\A|\b)/+it, it.toUpperCase()) }
 println dst
-// => Dierk König
+// => Dierk Kï¿½nig
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_6.13
@@ -2801,7 +2769,7 @@ assert (fakedInput =~ findUserRegex).count == 2
 // TODO
 // Groovy uses Unicode character encoding
 // special care needs to be taken when using unicode because of the different
-// byte lengths, e.g. à can be encoded as two bytes \u0061\u0300 and is also
+// byte lengths, e.g. ï¿½ can be encoded as two bytes \u0061\u0300 and is also
 // supported in legacy character sets by a single character \u00E0.  To Match
 // this character, you can't use any of /./, /../, /a/, /\u00E0/, /\u0061/\u0300
 // or /\pL/. The correct way is to use /X (not currently supported) or one
@@ -2818,11 +2786,11 @@ def checkUnicode(s) {
     println 'Exactly matches /\\pL\\pM*/      ' + (s ==~ /\pL\pM*/)
     println 'Exactly matches /\\PM\\pM*/      ' + (s ==~ /\PM\pM*/)
 }
-checkUnicode('à')
+checkUnicode('ï¿½')
 checkUnicode('\u0061\u0300')
 checkUnicode('\u00E0')
 // =>
-// à is of size 1
+// ï¿½ is of size 1
 // Exactly matches /./   true
 // Exactly matches /../  false
 // Exactly matches /a/   false
@@ -2840,7 +2808,7 @@ checkUnicode('\u00E0')
 // Exactly matches /\pL/          false
 // Exactly matches /\pL\pM*/      true
 // Exactly matches /\PM\pM*/      true
-// à is of size 1
+// ï¿½ is of size 1
 // Exactly matches /./   true
 // Exactly matches /../  false
 // Exactly matches /a/   false
