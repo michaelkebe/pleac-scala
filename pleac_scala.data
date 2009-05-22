@@ -498,30 +498,28 @@ val randomNumber = rnd.nextGaussian() * sdev + mean
 
 // @@PLEAC@@_2.11
 //----------------------------------------------------------------------------------
-// TODO
-// radians = Math.toRadians(degrees)
-assert Math.toRadians(90) == Math.PI / 2
-// degrees = Math.toDegrees(radians)
-assert Math.toDegrees(Math.PI) == 180
+assert(Math.toRadians(90) == Math.Pi / 2)
+assert(Math.toDegrees(Math.Pi) == 180)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.12
 //----------------------------------------------------------------------------------
-// TODO
-// use Java's trigonometry methods in java.lang.Math
+// use methods in Math object
 //----------------------------------------------------------------------------------
-t = Math.tan(1.5)
-assert t > 14.1 && t < 14.11
-ac = Math.acos(0.1)
-assert ac > 1.47 && ac < 1.48
+val t = Math.tan(1.5)
+assert(t > 14.1 && t < 14.11)
+val ac = Math.acos(0.1)
+assert(ac > 1.47 && ac < 1.48)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.13
 //----------------------------------------------------------------------------------
-// TODO
-assert Math.log(Math.E) == 1
-assert Math.log10(10000) == 4
-def logn(base, val) { Math.log(val)/Math.log(base) }
+assert(Math.log(Math.E) == 1)
+// Use java.lang.Math for log to base 10
+// logarithm of 10000 to base 10 is 4
+assert(java.lang.Math.log10(10000) == 4)
+
+def logn(base:Double, x:Double) = Math.log(x) / Math.log(base)
 assert logn(2, 1024) == 10
 //----------------------------------------------------------------------------------
 
@@ -552,14 +550,8 @@ for (i in 0..<productArray.size()) {
 
 // @@PLEAC@@_2.15
 //----------------------------------------------------------------------------------
-// TODO
-// there are several Java Complex number packages, e.g.:
-// http://jakarta.apache.org/commons/math/userguide/complex.html
-import org.apache.commons.math.complex.Complex
-a = new Complex(3, 5)  // 3 + 5i
-b = new Complex(2, -2) // 2 - 2i
-expected = new Complex (16, 4) // 16 + 4i
-assert expected == a * b
+// @@INCLUDE include/scala/ch02/Complex.scala
+// Or use org.apache.commons.math.complex.Complex
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.16
