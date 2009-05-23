@@ -551,61 +551,51 @@ for (i in 0..<productArray.size()) {
 // @@PLEAC@@_2.15
 //----------------------------------------------------------------------------------
 // @@INCLUDE include/scala/ch02/Complex.scala
-// Or use org.apache.commons.math.complex.Complex
+// Or use a library e.g. org.apache.commons.math.complex.Complex
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.16
 //----------------------------------------------------------------------------------
-// TODO
-assert Integer.parseInt('101', 16) == 257
-assert Integer.parseInt('077', 8) == 63
-//----------------------------------------------------------------------------------
-// conversionScript:
-print 'Gimme a number in decimal, octal, or hex: '
-reader = new BufferedReader(new InputStreamReader(System.in))
-input = reader.readLine().trim()
-switch(input) {
-    case ~'^0x\\d+':
-        number = Integer.parseInt(input.substring(2), 16); break
-    case ~'^0\\d+':
-        number = Integer.parseInt(input.substring(1), 8); break
-    default:
-        number = Integer.parseInt(input)
-}
-println 'Decimal value: ' + number
+val twofivefive = Integer.parseInt("ff", 16)        // hex to dec
+assert(twofivefive.toHexString.toLowerCase == "ff") // reverse it
 
-// permissionScript:
-print 'Enter file permission in octal: '
-input = new BufferedReader(new InputStreamReader(System.in))
-num = input.readLine().trim()
-permission = Integer.parseInt(num, 8)
-println 'Decimal value: ' + permission
+val five = Integer.parseInt("101", 2)               // bin to dec
+assert(five.toBinaryString.toLowerCase == "101")    // reverse it
+
+val eight = Integer.parseInt("10", 8)               // oct to dec
+assert(eight.toOctalString.toLowerCase == "10")     // reverse it
+//----------------------------------------------------------------------------------
+// @@INCLUDE include/scala/ch02/Conversion.scala
+// @@INCLUDE include/scala/ch02/Permission.scala
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.17
 //----------------------------------------------------------------------------------
-// TODO
-nf = NumberFormat.getInstance()
-assert nf.format(-1740525205) == '-1,740,525,205'
+val nf = java.text.NumberFormat.getInstance(java.util.Locale.US)
+assert(nf.format(-1740525205) == "-1,740,525,205")
 //----------------------------------------------------------------------------------
 // @@PLEAC@@_2.18
 //----------------------------------------------------------------------------------
-// TODO
-def timeMessage(hour) { 'It took ' + hour + ' hour' + (hour == 1 ? '' : 's') }
-assert 'It took 1 hour' == timeMessage(1)
-assert 'It took 2 hours' == timeMessage(2)
+def timeMessage(h:Int) = { "It took " + h + " hour" + (if (h == 1) "" else "s") }
+assert("It took 0 hours" == timeMessage(0))
+assert("It took 1 hour" == timeMessage(1))
+assert("It took 2 hours" == timeMessage(2))
 
 // you can also use Java's ChoiceFormat
 // overkill for this example but extensible and compatible with MessageFormat
-limits = [1, ChoiceFormat.nextDouble(1)] as double[]
-names = ['century', 'centuries'] as String[]
-choice = new ChoiceFormat(limits, names)
-numCenturies = 1
-expected = 'It took 1 century'
-assert expected == "It took $numCenturies " + choice.format(numCenturies)
-// an alternate constructor syntax
-choice = new ChoiceFormat('0#are no files|1#is one file|2#are multiple files')
-assert choice.format(3) == 'are multiple files'
+import java.text.ChoiceFormat
+val limits = Array(0.0, 1.0, 2.0)
+val names = Array("strawberries", "strawberry", "strawberries")
+val choice = new ChoiceFormat(limits, names)
+val expect0 = "I have 0 strawberries"
+val expect1 = "I have 1 strawberry"
+val expect2 = "I have 2 strawberries"
+val count = 0
+assert("I have " + count + " " + choice.format(count) == expect0)
+val count = 1
+assert("I have " + count + " " + choice.format(count) == expect1)
+val count = 2
+assert("I have " + count + " " + choice.format(count) == expect2)
 
 // more complex pluralization can be done with Java libraries, e.g.:
 // http://www.elvis.ac.nz/brain?PluralizationMapping
