@@ -999,6 +999,7 @@ assert '\n' + new MailHopDelta(sampleMessage).process() == expected
 // @@PLEAC@@_4.0
 //----------------------------------------------------------------------------------
 // Introduction to lists
+// @@INCLUDE include/scala/ch04/Flatten.scala
 // Scala does not automatically flatten lists
 val simple = List("this", "that", "the", "other")
 val nested = List("this", "that", List("the", "other"))
@@ -1008,6 +1009,7 @@ assert(nested.length == 3)
 val nested2 = List(List("this"), List("that"), List("the","other"))
 val flattenNestedToSimple = List.flatten(nested2)
 assert(flattenNestedToSimple.length == 4)
+// See Flatten.scala for a recursive solution
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_4.1
