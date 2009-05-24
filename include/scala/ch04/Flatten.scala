@@ -1,12 +1,6 @@
-// Solution by Phil Gold : http://aperiodic.net/phil/scala/s-99/
-object Flatten {
-
-	def flatten(l: List[Any]): List[Any] = l flatMap {
-    		case l: List[_] => flatten(l)
-    		case e => List(e)
-  	}
+val list = List(1, 2, List(3, 4),5,List(6,7))
+val flattened = list flatMap { 
+  case iterable: Iterable[_] => iterable
+  case other                 => List(other)
 }
-
-val list = List(1,2,List(5, 7, 6), 3, 4)
-println("Before: " + list )
-println(" After: " + Flatten.flatten(list))
+println(flattened)  // Will result in List(1, 2, 3, 4, 5, 6, 7)
