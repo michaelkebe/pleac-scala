@@ -207,7 +207,16 @@ assert(longPalindromes == List("rotator", "reviver"))
 
 // @@PLEAC@@_1.8
 //----------------------------------------------------------------------------------
-// TODO
+// Scala does not support variable expansion.
+// You have to concatenate.
+val debt = 150
+assert("You owe " + debt + " to me" == "You owe 150 to me")
+
+val rows = 24
+val cols = 80
+assert("I am " + rows + " high and " + cols + " wide" == "I am 24 high and 80 wide")
+
+assert("I am 17 years old".replaceAll("""\d+""", "34") == "I am 34 years old")
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_1.9
