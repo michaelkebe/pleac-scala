@@ -123,7 +123,7 @@ assert(setDefaultIfNullOrEmpty("Something else") == "Something else")
 
 // @@PLEAC@@_1.3
 //----------------------------------------------------------------------------------
-// TODO not possible in Scala? 
+// not possible in Scala
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_1.4
