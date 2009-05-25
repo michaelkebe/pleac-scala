@@ -179,24 +179,9 @@ string.foreach { c => s = s + c }
 assert(s == "an apple a day")
 assert(string.substring(3,8).split("").subArray(1,6).deepEquals(Array("a", "p", "p", "l", "e")))
 //----------------------------------------------------------------------------------
-// TODO
-// CheckSum.groovy: Compute 16-bit checksum of input file
-// Usage: groovy CheckSum <file>
-// script:
-checksum = 0
-new File(args[0]).eachByte{ checksum += it }
-checksum %= (int) Math.pow(2, 16) - 1
-println checksum
+// @@INCLUDE include/scala/ch01/CheckSum.scala
 //----------------------------------------------------------------------------------
-// to run on its own source code:
-//=> % groovy CheckSum CheckSum.groovy
-//=> 9349
-//----------------------------------------------------------------------------------
-// Slowcat.groovy: Emulate a  s l o w  line printer
-// Usage: groovy Slowcat <file> <delay_millis_between_each_char>
-// script:
-delay = args[1].toInteger()
-new File(args[0]).eachByte{ print ((char) it); Thread.sleep(delay) }
+// @@INCLUDE include/scala/ch01/SlowCat.scala
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_1.6
