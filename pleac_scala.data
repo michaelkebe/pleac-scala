@@ -58,12 +58,6 @@ var charlist = (for (i <- "abcd") yield i).toList
 assert(charlist == List[Char]('a','b','c','d'))
 
 val string = "This is what you have"
-// Indexing forwards  (left to right)
-// tens   000000000011111111112
-// units +012345678901234567890
-// Indexing backwards (right to left)
-// tens   221111111111000000000
-// units  109876543210987654321-
 
 assert(string.substring(0,1) == "T")
 assert(string.substring(5,7) == "is")
