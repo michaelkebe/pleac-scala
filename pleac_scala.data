@@ -1025,13 +1025,12 @@ bag(3) = List("yellow")
 bag.foreach(a => println("I have " + commify(a)))
 
 def commify(args:List[String]) = {
-    args.length match {
-        case 0 => "zero marbles"
-        case 1 => "a " + args(0) + " marble"
-        case 2 => args(0) + " and " + args(1) + " marbles"
-        case _ =>
-            (args.init ::: List("and ")).mkString(", ") + args(args.length-1) + " marbles"
-    }
+  args.length match {
+    case 0 => "zero marbles"
+    case 1 => "a " + args(0) + " marble"
+    case 2 => args(0) + " and " + args(1) + " marbles"
+    case _ => (args.init ::: List("and ")).mkString(", ") + args(args.length-1) + " marbles"
+  }
 }
 
 //----------------------------------------------------------------------------------
