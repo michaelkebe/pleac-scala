@@ -1398,91 +1398,103 @@ assert '\n' + sb.toString() == expected
 
 // @@PLEAC@@_5.0
 //----------------------------------------------------------------------------------
-// TODO
-// quotes are optional around the key
-age = [ Nat:24, Jules:25, Josh:17 ]
+// Hashes are called Maps in Scala
+val age = Map("Nat" -> 24, "Jules" -> 25, "Josh" -> 17)
+assert(age("Nat") == 24)
+assert(age("Jules") == 25)
+assert(age("Josh") == 17)
 
-assert age['Nat']  == 24
-// alternate syntax
-assert age."Jules" == 25
-
-foodColor = [
-    Apple:  'red',
-    Banana: 'yellow',
-    Lemon:  'yellow',
-    Carrot: 'orange'
-]
-assert foodColor.size() == 4
+val foodColor = Map(
+  "Apple"  -> "red",
+  "Banana" -> "yellow",
+  "Lemon"  -> "yellow",
+  "Carrot" -> "orange"
+)
+assert(foodColor.size == 4)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_5.1
 //----------------------------------------------------------------------------------
-// TODO
-foodColor['Lemon'] = 'green'
-assert foodColor.size() == 4
-assert foodColor['Lemon'] == 'green'
-foodColor['Raspberry'] = 'pink'
-assert foodColor.size() == 5
+// Scala uses by default immutable collections
+// If you want mutable Map you have to import them explicitly
+import scala.collection.mutable.Map
+val foodColor = Map(
+  "Apple"  -> "red",
+  "Banana" -> "yellow",
+  "Lemon"  -> "yellow",
+  "Carrot" -> "orange"
+)
+foodColor + ("Lemon" -> "green")
+assert(foodColor.size == 4)
+assert(foodColor("Lemon") == "green")
+foodColor + ("Raspberry" -> "pink")
+assert(foodColor.size == 5)
+// alternative way to add to a map
+foodColor.put("Spinach", "green")
+
+println("Known foods:")
+for (f <- foodColor.keys) {
+  println(f)
+}
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_5.2
 //----------------------------------------------------------------------------------
-// TODO
-assert ['Banana', 'Martini'].collect{ foodColor.containsKey(it)?'food':'drink' } == [ 'food', 'drink' ]
+// with foodColor from 5.0
+assert(foodColor.contains("Hamburger") == false)
+assert(foodColor.contains("Apple") == true)
 
-age = [Toddler:3, Unborn:0, Phantasm:null]
-['Toddler', 'Unborn', 'Phantasm', 'Relic'].each{ key ->
-    print "$key: "
-    if (age.containsKey(key)) print 'has key '
-    if (age.containsKey(key) && age[key]!=null) print 'non-null '
-    if (age.containsKey(key) && age[key]) print 'true '
-    println ''
+val age = Map("Toddler" -> 3, "Unborn" -> 0, "Phantasm" -> null)
+for(key <- List("Toddler", "Unborn", "Phantasm", "Relic")) {
+  print(key + ": ")
+  if (age.contains(key)) print("has key ")
+  if (age.contains(key) && age(key) != null) print("non-null ")
+  println
 }
-// =>
-// Toddler: has key non-null true
-// Unborn: has key non-null
-// Phantasm: has key
-// Relic:
+// Toddler: has key non-null 
+// Unborn: has key non-null 
+// Phantasm: has key 
+// Relic: 
+
+// TODO
+%size = ();
+while (<>) {
+  chomp;
+  next if $size{$_};              # WRONG attempt to skip
+  $size{$_} = -s $_;
+}
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_5.3
 //----------------------------------------------------------------------------------
-// TODO
-assert foodColor.size() == 5
-foodColor.remove('Banana')
-assert foodColor.size() == 4
+// with the initial foodColor from 5.1 (mutable)
+assert(foodColor.size == 4)
+// - returns itself after removing the key
+foodColor - "Banana"
+assert(foodColor.size == 3)
+// removeKey returns Option with the value of the removed key
+val banana = foodColor.removeKey("Apple")
+assert(foodColor.size == 2)
+assert(banana.isDefined == true)
+assert(banana.get == "red")
+
+// to remove more at a time use --, --= or -=
+foodColor -- List("Carrot", "Lemon")
+assert(foodColor.size == 0)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_5.4
 //----------------------------------------------------------------------------------
 // TODO
-hash = [:]
-hash.each { key, value ->
-    // do something with key and value
+// with foodColor from 5.0 (or 5.1)
+val sb = new StringBuilder()
+foodColor.foreach { case (food, color) =>
+  sb ++ food ++ " is " ++ color ++ " "
 }
+// We cannot directly check the string, because Maps are not sorted (use SortedMap if you want that)
+assert(List("Carrot is orange", "Apple is red", "Lemon is yellow", "Banana is yellow").forall { i => s.contains(i) } )
 
-hash.each { entry ->
-    // do something with entry
-}
-
-hash.keySet().each { key ->
-    // do something with key
-}
-
-sb = new StringBuffer()
-foodColor.each { food, color ->
-    sb << "$food is $color\n"
-}
-assert '\n' + sb.toString() == '''
-Lemon is green
-Carrot is orange
-Apple is red
-Raspberry is pink
-'''
-
-foodColor.each { entry ->
-    assert entry.key.size() > 4 && entry.value.size() > 2
-}
+val sortedFoodColor:SortedMap = foodColor
 
 foodColorsSortedByFood = []
 foodColor.keySet().sort().each { k -> foodColorsSortedByFood << foodColor[k] }
