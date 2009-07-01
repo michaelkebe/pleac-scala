@@ -221,7 +221,29 @@ assert("I am 17 years old".replaceAll("""\d+""", "34") == "I am 34 years old")
 
 // @@PLEAC@@_1.9
 //----------------------------------------------------------------------------------
-// TODO
+val little = "bo peep"
+assert(little.toUpperCase == "BO PEEP")
+assert(little.toUpperCase.toLowerCase == "bo peep")
+
+val text = "thIs is a loNG lIne"
+assert("This Is A Long Line" == text.split(" ").map(_.toLowerCase.capitalize).mkString(" "))
+
+
+val rnd = new scala.util.Random
+val genesis = """
+Book 01 Genesis
+001:001 In the Beginning god created the heaven and the earth.
+001:002 And the earth was without form, and void; and darkness was
+        upon the face of the deep. and the spirit of god moved upon
+        the face of the waters.
+001:003 and god said, let there be light: and there was light.
+"""
+println(genesis.map {
+  c => {
+    if (rnd.nextDouble < 0.2) c.toUpperCase
+    else c.toLowerCase
+  }
+}.mkString)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_1.10
@@ -378,15 +400,23 @@ for (i <- x to y) {
     //i is set to every integer from x to y, inclusive
 }
 
+(x to y).foreach {
+  // implicit closure variable _ is set to every integer from x up to y
+}
 (x until y).foreach {
-    //implicit closure variable _ is set to every integer from x up to but excluding y
+  // implicit closure variable _ is set to every integer from x up to but excluding y
+}
+List.range(x, y, step).foreach {
+  // implicit closure variable _ is set to every integer
+  // from x up to but excluding y with a step size of step
 }
 
 assert(List.range(x,y,7) == List(3, 10, 17))
 
-assert((List("Infancy is:") ::: (for (i <- 0 to 2) yield i).toList ::: Nil).mkString(" ") == "Infancy is: 0 1 2")
-assert((List("Toddling is:") ::: (for (i <- 3 to 4) yield i).toList ::: Nil).mkString(" ") == "Toddling is: 3 4")
-assert((List("Childhood is:") ::: (for (i <- 5 to 12) yield i).toList ::: Nil).mkString(" ") == "Childhood is: 5 6 7 8 9 10 11 12")
+assert("Infancy is: " + (0 to 2).mkString(" ") == "Infancy is: 0 1 2")
+assert("Toddling is: " + (3 to 4).mkString(" ") == "Toddling is: 3 4")
+assert("Childhood is: " + (5 to 12).mkString(" ") == "Childhood is: 5 6 7 8 9 10 11 12")
+
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_2.6
@@ -1939,30 +1969,27 @@ parts = string =~ /(.*?)(l[^s]*s)(.*)/
 
 // @@PLEAC@@_6.1
 //----------------------------------------------------------------------------------
-// TODO
-// Groovy splits src and dest to avoid this problem
-src = 'Go this way'
-dst = src.replaceFirst('this', 'that')
-assert dst == 'Go that way'
+// Scala splits src and dest to avoid this problem
+val src = "Go this way"
+val dst = src.replaceAll("this", "that")
+assert("Go that way" == dst)
 
-// extract basename
-src = 'c:/some/path/file.ext'
-dst = src.replaceFirst('^.*/', '')
-assert dst == 'file.ext'
+val filename = "c:/user/notes.txt"
+val basename = filename.replaceFirst(""".*/""", "")
+assert("notes.txt" == basename)
 
-// Make All Words Title-Cased (not that you would do it this way)
-//  The preprocessing operations \X where X is one of l, u, L, and U are not supported
-// in the sun regex library but other Java regex libraries may support this. Instead:
-src = 'make all words title-cased'
-dst = src
-('a'..'z').each{ dst = dst.replaceAll(/([^a-zA-Z])/+it+/|\A/+it, /$1/+it.toUpperCase()) }
-assert dst == 'Make All Words Title-Cased'
+val words = "cap all the words"
+val capWords = words.split(" ").map(_.capitalize).mkString(" ")
+assert("Cap All The Words" == capWords)
 
-// rename list of dirs
-bindirs = '/usr/bin /bin /usr/local/bin'.split(' ').toList()
-expected = '/usr/lib /lib /usr/local/lib'.split(' ').toList()
-libdirs = bindirs.collect { dir -> dir.replaceFirst('bin', 'lib') }
-assert libdirs == expected
+val manpage = "/usr/man/man3/foo.1"
+val catpage = manpage.replaceAll("""man(?=\d)""", "cat")
+assert("/usr/man/cat3/foo.1" == catpage)
+
+val binDirs = "/usr/bin /bin /usr/local/bin".split(" ").toList
+val expectedDirs = "/usr/lib /lib /usr/local/lib".split(" ").toList
+val libDirs = binDirs.map(_.replaceFirst("bin", "lib"))
+assert(expectedDirs == libDirs)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_6.2
