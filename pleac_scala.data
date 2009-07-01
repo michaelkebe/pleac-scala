@@ -1994,53 +1994,35 @@ assert(expectedDirs == libDirs)
 
 // @@PLEAC@@_6.2
 //----------------------------------------------------------------------------------
-// TODO
-// Groovy uses Java regex (other Java regex packages would also be possible)
-// It doesn't support Locale-based settings but you can roll your own to some
-// extent, you can use any Unicode characters as per below and you can use
-// \p{Punct}    Punctuation: One of !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
-// or the other special character classes
-words = '''
-silly
-fa�ade
-co�perate
-ni�o
-Ren�e
-Moli�re
-h�moglobin
-na�ve
-tsch��
-random!stuff#here\u0948
-'''
-results = ''
-greekAlpha = '\u0391'
-special = '���������?' + greekAlpha
-// flag as either Y (alphabetic) or N (not)
-words.split('\n').findAll{it.trim()}.each{ results += it ==~ /^[\w/+special+/]+$/ ?'Y':'N' }
-assert results == 'YYYYYYYYYN'
-results = ''
-words.split('\n').findAll{it.trim()}.each{ results += it ==~ /^[^\p{Punct}]+$/ ?'Y':'N' }
-assert results == 'YYYYYYYYYN'
+// Scala uses internally methods of java.lang.Charakter (see the JavaDoc for details)
+assert(true == 'c'.isLetter)
+assert(false == 'c'.isDigit)
+assert(true == '3'.isDigit)
+assert(false == '3'.isLetter)
+// TODO check with locale settings
+
+val words = List("silly", "façade", "coöperate", "niño", "Renée", "Moliçre", "hæmoglobin", "naïve", "tschüß", "random!stuff#here\u0948")
+val greekAlpha = "\u0391"
+val special = "çéüßöñàæï?" + greekAlpha
+words.map(w => (w, w.matches("^[^" + special + "]+$")))
+words.map(w => (w, w.matches("""^[\w""" + special + """]+$""")))
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_6.3
 //----------------------------------------------------------------------------------
-// TODO
 // as many non-whitespace bytes as possible
-finder = 'abczqz z' =~ /a\S+z/
-assert finder[0] == 'abczqz'
+val matches = """[\S]+""".r.findAllIn("begin middle\tend").toList
+assert(List("begin", "middle", "end") == matches)
 
 // as many letters, apostrophes, and hyphens
-finder = "aAzZ'z-z0z" =~ /a[A-Za-z'-]+z/          //'
-assert finder[0] == "aAzZ'z-z"
+val matches = """[A-Za-z'-]+""".r.findAllIn("aA'AZ-Zz#az2!").toList
+assert(List("aA'AZ-Zz", "az") == matches)
 
 // selecting words
-finder = '23rd Psalm' =~ /\b([A-Za-z]+)\b/   // usually best
-println finder[0][0]
-// => Psalm (23rd is not matched)
-finder = '23rd Psalm' =~ /\s([A-Za-z]+)\s/   // fails at ends or w/ punctuation
-println finder.matches()
-// => false (no whitespaces at ends)
+val matches = """\b([A-Za-z]+)\b""".r.findAllIn("23rd Psalm").toList // usually best
+assert(List("Psalm") == matches)
+val matches = """\s([A-Za-z]+)\s""".r.findAllIn("23rd Psalm").toList // fails with end and punctation
+assert(matches.isEmpty)
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_6.4
