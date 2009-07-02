@@ -2027,57 +2027,55 @@ assert(matches.isEmpty)
 
 // @@PLEAC@@_6.4
 //----------------------------------------------------------------------------------
-// TODO
-str = 'groovy.codehaus.org and www.aboutgroovy.com'
-re = '''(?x)          # to enable whitespace and comments
+val str = "www.scala-lang.org and scala.sygneca.com"
+val re = """(?x)      # to enable whitespace and comments
       (               # capture the hostname in $1
         (?:           # these parens for grouping only
           (?! [-_] )  # lookahead for neither underscore nor dash
-          [\\w-] +    # hostname component
-          \\.         # and the domain dot
+          [\w-] +     # hostname component
+          \.          # and the domain dot
         ) +           # now repeat that whole thing a bunch of times
         [A-Za-z]      # next must be a letter
-        [\\w-] +      # now trailing domain part
+        [\w-] +       # now trailing domain part
       )               # end of $1 capture
-     '''
-
-finder = str =~ re
-out = str
-(0..<finder.count).each{
-    adr = finder[it][0]
-    out = out.replaceAll(adr, "$adr [${InetAddress.getByName(adr).hostAddress}]")
-}
-println out
-// => groovy.codehaus.org [63.246.7.187] and www.aboutgroovy.com [63.246.7.76]
+     """.r            // the .r creates a scala.util.matching.Regex
+val withIp = re.findAllIn(str).map { s =>
+  val ipaddr = java.net.InetAddress.getByName(s).getHostAddress()
+  s + " [" + ipaddr + "]"
+}.mkString(" ")
+println(withIp)
+// www.scala-lang.org [128.178.154.159] scala.sygneca.com [83.142.230.29]
 
 // to match whitespace or #-characters in an extended re you need to escape them.
-foo = 42
-str = 'blah #foo# blah'
-re = '''(?x)         # to enable whitespace and comments
-              \\#    # a pound sign
-              (\\w+) # the variable name
-              \\#    # another pound sign
-     '''
-finder = str =~ re
-found = finder[0]
-out = str.replaceAll(found[0], evaluate(found[1]).toString())
-assert out == 'blah 42 blah'
+val foo = "42"
+val str = "blah #foo# blah"
+val re = """(?x)    # to enable whitespace and comments
+              \#    # a pound sign
+              (\w+) # the variable name
+              \#    # another pound sign
+         """.r      // the .r creates a scala.util.matching.Regex
+val out = re.replaceAllIn(str, foo)
+assert(out == "blah 42 blah")
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_6.5
 //----------------------------------------------------------------------------------
 // TODO
-fish = 'One fish two fish red fish blue fish'
-expected = 'The third fish is a red one.'
-thirdFish = /(?:\w+\s+fish\s+){2}(\w+)\s+fish.*/
-assert expected == (fish.replaceAll(thirdFish, 'The third fish is a $1 one.'))
+val fish = "One fish two fish red fish blue fish"
+val expected = "The third fish is a red one."
+val re = """(\w+)\sfish\b""".r
+// convert MatchIterator to Iterator[Match] to access groups,
+// drop the first 2 matches (we want the third fish),
+// get the match (next), get group 1
+val thirdFish = re.findAllIn(fish).matchData.drop(2).next.group(1)
+assert(expected == "The third fish is a " + thirdFish + " one.")
 
-anyFish = /(\w+)\s+fish\b/
-finder = fish =~ anyFish
-// finder contains an array of matched groups
-// 2 = third one (index start at 0), 1 = matched word in group
-out = "The third fish is a ${finder[2][1]} one."
-assert out == expected
+val fish = "One fish two fish red fish blue fish"
+val expected = "The third fish is a red one."
+val re = """(?:\w+\s+fish\s+){2}(\w+)\s+fish""".r
+val thirdFish = re.findFirstMatchIn(fish).get.group(1)
+val out = "The third fish is a " + thirdFish + " one."
+assert(expected == out)
 
 evens = []
 (0..<finder.count).findAll{it%2!=0}.each{ evens += finder[it][1] }
@@ -2420,28 +2418,7 @@ assert input.findAll{ matchAll(it, ['cat$','^n.*']) }.size() == 0
 
 // @@PLEAC@@_6.11
 //----------------------------------------------------------------------------------
-// TODO
-// patternCheckingScript:
-prompt = '\n> '
-print 'Enter patterns to check:' + prompt
-new BufferedReader(new InputStreamReader(System.in)).eachLine{ line ->
-    try {
-        Pattern.compile(line)
-        print 'Valid' + prompt
-    } catch (java.util.regex.PatternSyntaxException ex) {
-        print 'Invalid pattern: ' + ex.message + prompt
-    }
-}
-// =>
-// Enter patterns to check:
-// > ab*.c
-// Valid
-// > ^\s+[^a-z]*$
-// Valid
-// > **
-// Invalid pattern: Dangling meta character '*' near index 0
-// **
-// ^
+// @@INCLUDE include/scala/ch06/CheckPattern.scala
 //----------------------------------------------------------------------------------
 
 // @@PLEAC@@_6.12
