@@ -186,11 +186,9 @@ assert(string.substring(3,8).split("").subArray(1,6).deepEquals(Array("a", "p", 
 
 // @@PLEAC@@_1.6
 //----------------------------------------------------------------------------------
-// Will work hopefully with 2.8+
 // See http://lampsvn.epfl.ch/trac/scala/ticket/1495
+// Will work with Scala 2.8+
 assert("gnirts".reverse == "string")
-// current workaround is to use toString
-assert("gnirts".reverse.toString == "string")
 
 val string = "Yoda said, \"can you see this?\""
 assert(string.split(" ").reverse.mkString(" ") == "this?\" see you \"can said, Yoda")
@@ -1994,7 +1992,7 @@ assert(expectedDirs == libDirs)
 
 // @@PLEAC@@_6.2
 //----------------------------------------------------------------------------------
-// Scala uses internally methods of java.lang.Charakter (see the JavaDoc for details)
+// Scala uses internally methods of java.lang.Character (see the JavaDoc for details)
 assert(true == 'c'.isLetter)
 assert(false == 'c'.isDigit)
 assert(true == '3'.isDigit)
